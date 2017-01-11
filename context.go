@@ -24,7 +24,7 @@ func (c *Context) Do() {
 	}
 }
 
-func (c *Context) Get(name string) interface{} {
+func (c *Context) Get(key string) interface{} {
 	return c.store[key]
 }
 
