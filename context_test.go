@@ -14,10 +14,10 @@ type setStrategy struct {
 	params *setStrategyParams
 }
 
-func newSetStrategy(key string, value interface{}) *setStrategy{
+func newSetStrategy(i int) *setStrategy{
 	return &setStrategy{&setStrategyParams{
-		key: key,
-		value: value,
+		key: strconv.Itoa(i),
+		value: i,
 	}}
 }
 
@@ -49,10 +49,10 @@ func TestContextSet(t *testing.T) {
 
 func TestContextDoSet(t *testing.T) {
 	strategies := []Strategy{
-		newSetStrategy("1", 1),
-		newSetStrategy("2", 2),
-		newSetStrategy("3", 3),
-		newSetStrategy("4", 4),
+		newSetStrategy(1),
+		newSetStrategy(2),
+		newSetStrategy(3),
+		newSetStrategy(4),
 	}
 
 	c := New(strategies)
