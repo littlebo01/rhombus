@@ -2,6 +2,7 @@ package rhombus
 
 import (
 	"testing"
+	"strconv"
 )
 
 type setStrategyParams struct {
@@ -24,6 +25,17 @@ func (s *setStrategy) Do(c *Context) {
 	c.DoSet(s.params.key, s.params.value)
 }
 
+func contextAssert(t *testing.T, c *Context, top int) {
+	for i := 1; i <= top; i++ {
+		key := strconv.Itoa(i)
+		val := c.Get(key)
+
+		if val.(int) != i {
+			t.Fatalf("Val(%g) = %d; want %d", val, val, i)
+		}
+	}
+}
+
 func TestContextSet(t *testing.T) {
 	strategies := []Strategy{}
 	c := New(strategies)
@@ -32,63 +44,20 @@ func TestContextSet(t *testing.T) {
 	c.Set("3", 3)
 	c.Set("4", 4)
 
-	v1 := c.Get("1")
-	v2 := c.Get("2")
-	v3 := c.Get("3")
-	v4 := c.Get("4")
-
-	if v1.(int) != 1 {
-		t.Fatalf("v1(%g) = %d; want %d", v1, 1, v1)
-	}
-	if v2.(int) != 2 {
-		t.Fatalf("v1(%g) = %d; want %d", v2, 2, v2)
-	}
-	if v3.(int) != 3 {
-		t.Fatalf("v1(%g) = %d; want %d", v3, 3, v3)
-	}
-	if v4.(int) != 4 {
-		t.Fatalf("v1(%g) = %d; want %d", v4, 4, v4)
-	}
+	contextAssert(t, c, 4)
 }
 
 func TestContextDoSet(t *testing.T) {
 	strategies := []Strategy{
-		&setStrategy{&setStrategyParams{
-			key: "1",
-			value: 1,
-		}},
-		&setStrategy{&setStrategyParams{
-			key: "2",
-			value: 2,
-		}},
-		&setStrategy{&setStrategyParams{
-			key: "3",
-			value: 3,
-		}},
-		&setStrategy{&setStrategyParams{
-			key: "4",
-			value: 4,
-		}},
+		newSetStrategy("1", 1),
+		newSetStrategy("2", 2),
+		newSetStrategy("3", 3),
+		newSetStrategy("4", 4),
 	}
 
 	c := New(strategies)
 	c.Do()
+	defer c.Close()
 
-	v1 := c.Get("1")
-	v2 := c.Get("2")
-	v3 := c.Get("3")
-	v4 := c.Get("4")
-
-	if v1.(int) != 1 {
-		t.Fatalf("v1(%g) = %d; want %d", v1, 1, v1)
-	}
-	if v2.(int) != 2 {
-		t.Fatalf("v1(%g) = %d; want %d", v2, 2, v2)
-	}
-	if v3.(int) != 3 {
-		t.Fatalf("v1(%g) = %d; want %d", v3, 3, v3)
-	}
-	if v4.(int) != 4 {
-		t.Fatalf("v1(%g) = %d; want %d", v4, 4, v4)
-	}
+	contextAssert(t, c, 4)
 }
