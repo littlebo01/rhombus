@@ -5,29 +5,14 @@ import (
 )
 
 func TestBatchDo(t *testing.T) {
-	s1 := &setStrategy{&setStrategyParams{
-				key: "1",
-				value: 1,
-	}}
-
-	s2 := &setStrategy{&setStrategyParams{
-				key: "2",
-				value: 2,
-	}}
-
-	s3 := &setStrategy{&setStrategyParams{
-				key: "3",
-				value: 3,
-	}}
-
-	s4 := &setStrategy{&setStrategyParams{
-				key: "4",
-				value: 4,
-	}}
-
-
 	strategies := []Strategy{
-		Batch(3, s1, s2, s3, s4),
+		Batch(
+			3,
+			newSetStrategy("1", 1),
+			newSetStrategy("2", 2),
+			newSetStrategy("3", 3),
+			newSetStrategy("4", 4),
+		),
 	}
 
 	c := New(strategies)

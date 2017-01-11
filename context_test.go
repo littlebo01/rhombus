@@ -13,6 +13,13 @@ type setStrategy struct {
 	params *setStrategyParams
 }
 
+func newSetStrategy(key string, value interface{}) *setStrategy{
+	return &setStrategy{&setStrategyParams{
+		key: key,
+		value: value,
+	}}
+}
+
 func (s *setStrategy) Do(c *Context) {
 	c.DoSet(s.params.key, s.params.value)
 }
