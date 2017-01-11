@@ -1,5 +1,9 @@
 package rhombus
 
+import (
+	"sync"
+)
+
 func Batch(size int, strategies ...Strategy) Strategy {
 	return &batchStrategy{
 		size: size,
@@ -13,15 +17,17 @@ type batchStrategy struct {
 }
 
 func (s *batchStrategy) Do(c *Context) {
+	var wg sync.WaitGroup
+
 	for i, strategy := range s.strategies {
-		c.Add(1)
+		wg.Add(1)
 
 		go strategy.Do(c)
 
 		if i % s.size == 0 {
-			c.Wait()
+			wg.Wait()
 		}
 	}
 
-	c.Wait()
+	wg.Wait()
 }
