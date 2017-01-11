@@ -26,6 +26,7 @@ func New(strategies []Strategy) *Context {
 		exitChan: make(chan int),
 		strategies: strategies,
 	}
+
 }
 
 func (c *Context) Do() {
@@ -34,7 +35,9 @@ func (c *Context) Do() {
 	for _, strategy := range c.strategies {
 		strategy.Do(c)
 	}
+}
 
+func (c *Context) Close() {
 	c.exitChan <- 1
 	c.wg.Wait()
 	close(c.storeChan)
