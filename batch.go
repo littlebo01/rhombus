@@ -22,7 +22,10 @@ func (s *batchStrategy) Do(c *Context) {
 	for i, strategy := range s.strategies {
 		wg.Add(1)
 
-		go strategy.Do(c)
+		go func() {
+			strategy.Do(c)
+			wg.Done()
+		}()
 
 		if i % s.size == 0 {
 			wg.Wait()
