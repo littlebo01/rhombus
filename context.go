@@ -16,15 +16,15 @@ type Context struct {
 	exitChan   chan int
 	wg         sync.WaitGroup
 
-	strategies []Strategy
+	tasks []Task
 }
 
-func New(strategies []Strategy) *Context {
+func New(tasks []Task) *Context {
 	return &Context{
 		store: make(map[string]interface{}),
 		storeChan: make(chan *storeItem),
 		exitChan: make(chan int),
-		strategies: strategies,
+		tasks: tasks,
 	}
 
 }
@@ -32,8 +32,8 @@ func New(strategies []Strategy) *Context {
 func (c *Context) Do() {
 	go c.storeWriter()
 
-	for _, strategy := range c.strategies {
-		strategy.Do(c)
+	for _, task := range c.tasks {
+		task.Do(c)
 	}
 }
 

@@ -5,16 +5,16 @@ import (
 )
 
 func TestMultiDo(t *testing.T) {
-	strategies := []Strategy{
+	tasks := []Task{
 		Multi(
-			newSetStrategy(1),
-			newSetStrategy(2),
-			newSetStrategy(3),
-			newSetStrategy(4),
+			newSetTask(1),
+			newSetTask(2),
+			newSetTask(3),
+			newSetTask(4),
 		),
 	}
 
-	c := New(strategies)
+	c := New(tasks)
 	c.Do()
 	defer c.Close()
 

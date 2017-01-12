@@ -5,23 +5,23 @@ import (
 	"strconv"
 )
 
-type setStrategyParams struct {
+type setTaskParams struct {
 	key string
 	value interface{}
 }
 
-type setStrategy struct {
-	params *setStrategyParams
+type setTask struct {
+	params *setTaskParams
 }
 
-func newSetStrategy(i int) *setStrategy{
-	return &setStrategy{&setStrategyParams{
+func newSetTask(i int) *setTask {
+	return &setTask{&setTaskParams{
 		key: strconv.Itoa(i),
 		value: i,
 	}}
 }
 
-func (s *setStrategy) Do(c *Context) {
+func (s *setTask) Do(c *Context) {
 	c.DoSet(s.params.key, s.params.value)
 }
 
@@ -37,8 +37,8 @@ func contextAssert(t *testing.T, c *Context, top int) {
 }
 
 func TestContextSet(t *testing.T) {
-	strategies := []Strategy{}
-	c := New(strategies)
+	tasks := []Task{}
+	c := New(tasks)
 	c.Set("1", 1)
 	c.Set("2", 2)
 	c.Set("3", 3)
@@ -48,14 +48,14 @@ func TestContextSet(t *testing.T) {
 }
 
 func TestContextDoSet(t *testing.T) {
-	strategies := []Strategy{
-		newSetStrategy(1),
-		newSetStrategy(2),
-		newSetStrategy(3),
-		newSetStrategy(4),
+	tasks := []Task{
+		newSetTask(1),
+		newSetTask(2),
+		newSetTask(3),
+		newSetTask(4),
 	}
 
-	c := New(strategies)
+	c := New(tasks)
 	c.Do()
 	defer c.Close()
 

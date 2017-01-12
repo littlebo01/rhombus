@@ -1,8 +1,8 @@
 package rhombus
 
-func Chain(strategies ...Strategy) Strategy {
-	return &batchStrategy{
+func Chain(tasks ...Task) Task {
+	return &batchTasks{
 		size: 1,
-		strategies: strategies,
+		tasks: tasks,
 	}
 }

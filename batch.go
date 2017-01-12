@@ -4,30 +4,30 @@ import (
 	"sync"
 )
 
-func Batch(size int, strategies ...Strategy) Strategy {
-	return &batchStrategy{
+func Batch(size int, tasks ...Task) Task {
+	return &batchTasks{
 		size: size,
-		strategies: strategies,
+		tasks: tasks,
 	}
 }
 
-type batchStrategy struct {
+type batchTasks struct {
 	size int
-	strategies []Strategy
+	tasks []Task
 }
 
-func (s *batchStrategy) Do(c *Context) {
+func (t *batchTasks) Do(c *Context) {
 	var wg sync.WaitGroup
 
-	for i, strategy := range s.strategies {
+	for i, task := range t.tasks {
 		wg.Add(1)
 
-		go func(strategy Strategy) {
-			strategy.Do(c)
+		go func(task Task) {
+			task.Do(c)
 			wg.Done()
-		}(strategy)
+		}(task)
 
-		if i % s.size == 0 {
+		if i % t.size == 0 {
 			wg.Wait()
 		}
 	}

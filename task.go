@@ -1,5 +1,5 @@
 package rhombus
 
-type Strategy interface {
+type Task interface {
 	Do(c *Context)
 }

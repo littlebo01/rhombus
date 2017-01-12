@@ -1,8 +1,8 @@
 package rhombus
 
-func Multi(strategies ...Strategy) Strategy {
-	return &batchStrategy{
-		size: len(strategies),
-		strategies: strategies,
+func Multi(tasks ...Task) Task {
+	return &batchTasks{
+		size: len(tasks),
+		tasks: tasks,
 	}
 }
