@@ -1,31 +1,36 @@
 package rhombus
 
-type (
-	Value struct {
-		Key string
-		Job Task
-	}
-
-	ValueWith struct {
-		Key string
-		With func(c *Context) interface{}
-		value interface{}
-	}
-)
-
-func (v *Value) Do(c *Context) {
-	v.Job.Do(c)
-	c.Set(v.Key, v.Job.Value())
+type valueTask struct {
+	key  string
+	job  Task
+	with func(c *Context) interface{}
 }
 
-func (v *Value) Value() interface{} {
+func Value(key string, job Task) Task {
+	return &valueTask{
+		key: key,
+		job: job,
+		with: nil,
+	}
+}
+
+func ValueWith(key string, with func(c *Context) interface{}) Task {
+	return &valueTask{
+		key: key,
+		job: nil,
+		with: with,
+	}
+}
+
+func (t *valueTask) Do(c *Context) {
+	if t.job != nil {
+		t.job.Do(c)
+		c.Set(t.key, t.job.Value())
+	} else {
+		c.Set(t.key, t.with(c))
+	}
+}
+
+func (t *valueTask) Value() interface{} {
 	return nil
-}
-
-func (v *ValueWith) Do(c *Context) {
-	v.value = v.With(c)
-}
-
-func (v *ValueWith) Value() interface{} {
-	return v.value
 }
