@@ -34,3 +34,7 @@ func (t *batchTasks) Do(c *Context) {
 
 	wg.Wait()
 }
+
+func (t *batchTasks) Value() interface{} {
+	return nil
+}

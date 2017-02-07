@@ -6,7 +6,6 @@ import (
 )
 
 type setTaskParams struct {
-	key string
 	value interface{}
 }
 
@@ -14,15 +13,19 @@ type setTask struct {
 	params *setTaskParams
 }
 
-func newSetTask(i int) *setTask {
-	return &setTask{&setTaskParams{
-		key: strconv.Itoa(i),
-		value: i,
-	}}
+func newSetTask(i int) Task {
+	return &Value{
+		strconv.Itoa(i),
+		&setTask{&setTaskParams{
+			value: i,
+		}},
+	}
 }
 
-func (s *setTask) Do(c *Context) {
-	c.DoSet(s.params.key, s.params.value)
+func (s *setTask) Do(c *Context) {}
+
+func (s *setTask) Value() interface{} {
+	return s.params.value
 }
 
 func contextAssert(t *testing.T, c *Context, top int) {
