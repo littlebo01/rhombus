@@ -14,12 +14,12 @@ type setTask struct {
 }
 
 func newSetTask(i int) Task {
-	return &Value{
+	return Value(
 		strconv.Itoa(i),
 		&setTask{&setTaskParams{
 			value: i,
 		}},
-	}
+	)
 }
 
 func (s *setTask) Do(c *Context) {}

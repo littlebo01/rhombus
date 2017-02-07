@@ -39,15 +39,3 @@ func TestLazyInt(t *testing.T) {
 
 	contextAssert(t, c, 1)
 }
-
-func TestLazyInts(t *testing.T) {
-}
-
-
-func TestLazyString(t *testing.T) {
-
-}
-
-func TestLazyStrings(t *testing.T) {
-
-}
