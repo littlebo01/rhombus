@@ -4,21 +4,24 @@ import (
 	"testing"
 )
 
-type lazyIntTask struct {
-	Id *LazyInt
+type lazyValue interface {
+	Resolve(c *Context)
 }
 
-
-func (t *lazyIntTask) Do(c *Context) {
-	t.Id.Resolve(c)
+type lazyTask struct {
+	V lazyValue
 }
 
-func (t *lazyIntTask) Value() interface{} {
-	return t.Id.Val
+func (t *lazyTask) Do(c *Context) {
+	t.V.Resolve(c)
+}
+
+func (t *lazyTask) Value() interface{} {
+	return t.V
 }
 
 func newLazyIntTask(name string) Task {
-	return &lazyIntTask{NewInt(name)}
+	return &lazyTask{NewInt(name)}
 }
 
 func TestLazyInt(t *testing.T) {
@@ -29,13 +32,33 @@ func TestLazyInt(t *testing.T) {
 		Value("4", newLazyIntTask("d")),
 	}
 
+	items := map[string]int{
+		"a": 1,
+		"b": 2,
+		"c": 3,
+		"d": 4,
+	}
+
+	pairs := map[string]string {
+		"a": "1",
+		"b": "2",
+		"c": "3",
+		"d": "4",
+	}
+
 	c := New(tasks)
-	c.Set("a", 1)
-	c.Set("b", 2)
-	c.Set("c", 3)
-	c.Set("d", 4)
+	for key, value := range(items) {
+		c.Set(key, value)
+	}
 
 	c.Do()
 
-	contextAssert(t, c, 1)
+	for key1, key2 := range(pairs)  {
+		value := items[key1]
+		except := c.Get(key2).(*LazyInt)
+
+		if value != except.Val {
+			t.Fatalf("Val (%g) %+v ; want (%+v)", value, value, except)
+		}
+	}
 }

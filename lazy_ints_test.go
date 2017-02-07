@@ -4,20 +4,8 @@ import (
 	"testing"
 )
 
-type lazyIntsTask struct {
-	Ids *LazyInts
-}
-
-func (t *lazyIntsTask) Do(c *Context) {
-	t.Ids.Resolve(c)
-}
-
-func (t *lazyIntsTask) Value() interface{} {
-	return t.Ids.Val
-}
-
 func newLazyIntsTask(name string) Task {
-	return &lazyIntsTask{NewInts(name)}
+	return &lazyTask{NewInts(name)}
 }
 
 func TestLazyInts(t *testing.T) {
@@ -51,12 +39,12 @@ func TestLazyInts(t *testing.T) {
 
 	for key1, key2 := range(pairs)  {
 		value := items[key1]
-		except := c.Get(key2).([]int)
+		except := c.Get(key2).(*LazyInts)
 
 		size := len(value)
 
 		for i := 0; i < size; i++ {
-			if value[i] != except[i] {
+			if value[i] != except.Val[i] {
 				t.Fatalf("Val (%g) %+v ; want (%+v)", value, value, except)
 			}
 		}
