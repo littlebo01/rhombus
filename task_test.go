@@ -23,7 +23,6 @@ func TestMutliNestTasks(t *testing.T) {
 
 	c := New(tasks)
 	c.Do()
-	defer c.Close()
 
 	contextAssert(t, c, 6)
 }
@@ -55,7 +54,6 @@ func TestChainNestTasks(t *testing.T) {
 
 	c := New(tasks)
 	c.Do()
-	defer c.Close()
 
 	contextAssert(t, c, 12)
 }
@@ -132,7 +130,6 @@ func TestNestTasks(t *testing.T) {
 
 	c := New(tasks)
 	c.Do()
-	defer c.Close()
 
 	contextAssert(t, c, 33)
 }

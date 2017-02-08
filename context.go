@@ -33,9 +33,6 @@ func (c *Context) Abort() {
 	c.running = false
 }
 
-func (c *Context) Close() {
-}
-
 func (c *Context) Get(key string) interface{} {
 	c.storeGuard.RLock()
 	defer c.storeGuard.RUnlock()

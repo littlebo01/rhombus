@@ -17,7 +17,6 @@ func TestBatchDo(t *testing.T) {
 
 	c := New(tasks)
 	c.Do()
-	defer c.Close()
 
 	contextAssert(t, c, 4)
 }
