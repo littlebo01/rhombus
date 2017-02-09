@@ -8,6 +8,7 @@ type Context struct {
 	store      map[string]interface{}
 	storeGuard sync.RWMutex
 	running    bool
+	Finished   bool
 
 	tasks []Task
 }
@@ -23,9 +24,16 @@ func New(tasks []Task) *Context {
 
 func (c *Context) Do() {
 	for _, task := range c.tasks {
-		if c.running {
-			task.Do(c)
+		task.Do(c)
+
+		if !c.running {
+			break
 		}
+	}
+
+	if c.running {
+		c.Finished = true
+		c.running = false
 	}
 }
 
