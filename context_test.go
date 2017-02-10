@@ -32,7 +32,7 @@ func (s *setTask) Value() interface{} {
 }
 
 func (s *abortTask) Do(c *Context) {
-	c.Abort()
+	c.Abort("aborted")
 }
 
 func (s *abortTask) Value() interface{} {
@@ -74,7 +74,7 @@ func TestContextDoSet(t *testing.T) {
 
 	contextAssert(t, c, 4)
 
-	if !c.Finished {
+	if c.Error != nil {
 		t.Fatal("Tasks no finished.")
 	}
 }
@@ -83,7 +83,12 @@ func TestContextAbort(t *testing.T) {
 	tasks := []Task{
 		newSetTask(1),
 		newSetTask(2),
-		&abortTask{},
+		Multi(
+			&abortTask{},
+			&abortTask{},
+			&abortTask{},
+			&abortTask{},
+		),
 		newSetTask(3),
 		newSetTask(4),
 	}
@@ -99,7 +104,7 @@ func TestContextAbort(t *testing.T) {
 		t.Fatalf("Val (size) is %d; want %d", size, 2)
 	}
 
-	if c.Finished {
+	if c.Error == nil {
 		t.Fatal("Tasks abort no finished")
 	}
 }

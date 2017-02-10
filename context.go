@@ -2,13 +2,14 @@ package rhombus
 
 import (
 	"sync"
+	"errors"
 )
 
 type Context struct {
 	store      map[string]interface{}
 	storeGuard sync.RWMutex
-	running    bool
-	Finished   bool
+	done       bool
+	Error      error
 
 	tasks []Task
 }
@@ -16,7 +17,7 @@ type Context struct {
 func New(tasks []Task) *Context {
 	return &Context{
 		store: make(map[string]interface{}),
-		running: true,
+		done: false,
 		tasks: tasks,
 	}
 
@@ -26,19 +27,23 @@ func (c *Context) Do() {
 	for _, task := range c.tasks {
 		task.Do(c)
 
-		if !c.running {
+		if c.done {
 			break
 		}
 	}
-
-	if c.running {
-		c.Finished = true
-		c.running = false
-	}
 }
 
-func (c *Context) Abort() {
-	c.running = false
+func (c *Context) Abort(msg interface{}) {
+	switch err := msg.(type) {
+	case error:
+		c.Error = err
+	case string:
+		c.Error = errors.New(err)
+	default:
+		panic(errors.New("Unsupported type"))
+	}
+
+	c.done = true
 }
 
 func (c *Context) Get(key string) interface{} {

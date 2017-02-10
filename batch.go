@@ -20,7 +20,7 @@ func (t *batchTasks) Do(c *Context) {
 	var wg sync.WaitGroup
 
 	for i, task := range t.tasks {
-		if !c.running { break }
+		if c.done { break }
 
 		wg.Add(1)
 
