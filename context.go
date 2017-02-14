@@ -8,8 +8,7 @@ import (
 type Context struct {
 	store      map[string]interface{}
 	storeGuard sync.RWMutex
-	done       bool
-	Error      error
+	err        error
 
 	tasks []Task
 }
@@ -17,33 +16,32 @@ type Context struct {
 func New(tasks []Task) *Context {
 	return &Context{
 		store: make(map[string]interface{}),
-		done: false,
 		tasks: tasks,
 	}
 
 }
 
-func (c *Context) Do() {
+func (c *Context) Do() error {
 	for _, task := range c.tasks {
 		task.Do(c)
 
-		if c.done {
-			break
+		if c.err != nil {
+			return c.err
 		}
 	}
+
+	return nil
 }
 
 func (c *Context) Abort(msg interface{}) {
 	switch err := msg.(type) {
 	case error:
-		c.Error = err
+		c.err = err
 	case string:
-		c.Error = errors.New(err)
+		c.err = errors.New(err)
 	default:
 		panic(errors.New("Unsupported type"))
 	}
-
-	c.done = true
 }
 
 func (c *Context) Get(key string) interface{} {

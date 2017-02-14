@@ -74,7 +74,7 @@ func TestContextDoSet(t *testing.T) {
 
 	contextAssert(t, c, 4)
 
-	if c.Error != nil {
+	if c.err != nil {
 		t.Fatal("Tasks no finished.")
 	}
 }
@@ -94,7 +94,9 @@ func TestContextAbort(t *testing.T) {
 	}
 
 	c := New(tasks)
-	c.Do()
+	if err := c.Do(); err == nil {
+		t.Fatal("Tasks abort no finished")
+	}
 
 	contextAssert(t, c, 2)
 
@@ -102,9 +104,5 @@ func TestContextAbort(t *testing.T) {
 
 	if size != 2 {
 		t.Fatalf("Val (size) is %d; want %d", size, 2)
-	}
-
-	if c.Error == nil {
-		t.Fatal("Tasks abort no finished")
 	}
 }
