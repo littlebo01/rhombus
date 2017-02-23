@@ -1,8 +1,8 @@
 package rhombus
 
 import (
-	"testing"
 	"strconv"
+	"testing"
 )
 
 type setTaskParams struct {
@@ -13,7 +13,7 @@ type setTask struct {
 	params *setTaskParams
 }
 
-type abortTask struct {}
+type abortTask struct{}
 
 func newSetTask(i int) Task {
 	return Value(
@@ -23,7 +23,6 @@ func newSetTask(i int) Task {
 		}},
 	)
 }
-
 
 func (s *setTask) Do(c *Context) {}
 

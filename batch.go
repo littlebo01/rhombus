@@ -6,13 +6,13 @@ import (
 
 func Batch(size int, tasks ...Task) Task {
 	return &batchTasks{
-		size: size,
+		size:  size,
 		tasks: tasks,
 	}
 }
 
 type batchTasks struct {
-	size int
+	size  int
 	tasks []Task
 }
 
@@ -20,7 +20,9 @@ func (t *batchTasks) Do(c *Context) {
 	var wg sync.WaitGroup
 
 	for i, task := range t.tasks {
-		if c.err != nil { break }
+		if c.err != nil {
+			break
+		}
 
 		wg.Add(1)
 
@@ -29,7 +31,7 @@ func (t *batchTasks) Do(c *Context) {
 			wg.Done()
 		}(task)
 
-		if i % t.size == 0 {
+		if i%t.size == 0 {
 			wg.Wait()
 		}
 	}

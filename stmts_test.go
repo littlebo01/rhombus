@@ -4,12 +4,11 @@ import (
 	"testing"
 )
 
-
-type yesCond struct {}
-type noCond struct {}
+type yesCond struct{}
+type noCond struct{}
 
 func (y *yesCond) Value(c *Context) bool { return true }
-func (n *noCond) Value(c *Context) bool { return false }
+func (n *noCond) Value(c *Context) bool  { return false }
 
 func TestStmtsIf(t *testing.T) {
 	tasks := []Task{
@@ -28,7 +27,6 @@ func TestStmtsIf(t *testing.T) {
 
 	contextAssert(t, c, 4)
 }
-
 
 func TestStmtsIfNot(t *testing.T) {
 	tasks := []Task{

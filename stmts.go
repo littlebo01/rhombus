@@ -6,8 +6,8 @@ type (
 	}
 
 	ifStmt struct {
-		cond Condition
-		job Task
+		cond  Condition
+		job   Task
 		value bool
 	}
 )

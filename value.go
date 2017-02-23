@@ -8,16 +8,16 @@ type valueTask struct {
 
 func Value(key string, job Task) Task {
 	return &valueTask{
-		key: key,
-		job: job,
+		key:  key,
+		job:  job,
 		with: nil,
 	}
 }
 
 func ValueWith(key string, with func(c *Context) interface{}) Task {
 	return &valueTask{
-		key: key,
-		job: nil,
+		key:  key,
+		job:  nil,
 		with: with,
 	}
 }

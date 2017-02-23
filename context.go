@@ -1,8 +1,8 @@
 package rhombus
 
 import (
-	"sync"
 	"errors"
+	"sync"
 )
 
 type Context struct {
