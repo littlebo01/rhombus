@@ -33,6 +33,18 @@ func (c *Context) Do() error {
 	return nil
 }
 
+func (c *Context) Sub(tasks []Task) error {
+	for _, task := range tasks {
+		task.Do(c)
+
+		if c.err != nil {
+			return c.err
+		}
+	}
+
+	return nil
+}
+
 func (c *Context) Abort(msg interface{}) {
 	switch err := msg.(type) {
 	case error:
