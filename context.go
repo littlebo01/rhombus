@@ -33,16 +33,10 @@ func (c *Context) Do() error {
 	return nil
 }
 
-func (c *Context) Sub(tasks []Task) error {
-	for _, task := range tasks {
-		task.Do(c)
+func (c *Context) Sub(task Task) error {
+	task.Do(c)
 
-		if c.err != nil {
-			return c.err
-		}
-	}
-
-	return nil
+	return c.err
 }
 
 func (c *Context) Abort(msg interface{}) {

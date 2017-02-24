@@ -107,17 +107,16 @@ func TestContextAbort(t *testing.T) {
 }
 
 func TestContextSub(t *testing.T) {
-	tasks := []Task{
+	task := Multi(
 		newSetTask(1),
 		newSetTask(2),
 		newSetTask(3),
 		newSetTask(4),
-	}
+	)
 
 	c := New([]Task{})
-	if err := c.Sub(tasks); err != nil {
+	if err := c.Sub(task); err != nil {
 		t.Fatal("Sub tasks failed.")
 	}
-
 	contextAssert(t, c, 4)
 }
