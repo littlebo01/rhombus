@@ -23,11 +23,19 @@ func ValueWith(key string, with func(c *Context) interface{}) Task {
 }
 
 func (t *valueTask) Do(c *Context) {
+	var val interface{}
+
 	if t.job != nil {
 		t.job.Do(c)
+		val = t.job.Value()
 		c.Set(t.key, t.job.Value())
 	} else {
-		c.Set(t.key, t.with(c))
+		val = t.with(c)
+
+	}
+
+	if t.key != "_" && val != nil {
+		c.Set(t.key, val)
 	}
 }
 
