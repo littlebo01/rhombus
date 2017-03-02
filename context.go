@@ -21,6 +21,12 @@ func New(tasks []Task) *Context {
 
 }
 
+func (c *Context) catcher() {
+	if err := recover(); err != nil {
+		c.Abort(err)
+	}
+}
+
 func (c *Context) Do() error {
 	for _, task := range c.tasks {
 		task.Do(c)

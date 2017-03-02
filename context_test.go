@@ -14,6 +14,7 @@ type setTask struct {
 }
 
 type abortTask struct{}
+type panicTask struct{}
 
 func newSetTask(i int) Task {
 	return Value(
@@ -35,6 +36,15 @@ func (s *abortTask) Do(c *Context) {
 }
 
 func (s *abortTask) Value() interface{} {
+	return nil
+}
+
+func (s *panicTask) Do(c *Context) {
+	a := make([]int, 0, 0)
+	_ = a[100]
+}
+
+func (s *panicTask) Value() interface{} {
 	return nil
 }
 
@@ -119,4 +129,33 @@ func TestContextSub(t *testing.T) {
 		t.Fatal("Sub tasks failed.")
 	}
 	contextAssert(t, c, 4)
+}
+
+func TestContextSubCatcher(t *testing.T) {
+	task := Multi(
+		&panicTask{},
+		&panicTask{},
+	)
+
+	c := New([]Task{})
+
+	if err := c.Sub(task); err == nil {
+		t.Fatal("Err was nil want error.")
+	}
+}
+
+func TestContextDoCatcher(t *testing.T) {
+	tasks := []Task{
+		Multi(
+			&panicTask{},
+
+			&panicTask{},
+		),
+	}
+
+	c := New(tasks)
+
+	if err := c.Do(); err == nil {
+		t.Fatal("Err was nil want error.")
+	}
 }

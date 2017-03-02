@@ -27,8 +27,10 @@ func (t *batchTasks) Do(c *Context) {
 		wg.Add(1)
 
 		go func(task Task) {
+			defer wg.Done()
+			defer c.catcher()
+
 			task.Do(c)
-			wg.Done()
 		}(task)
 
 		if i%t.size == 0 {
