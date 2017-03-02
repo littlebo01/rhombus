@@ -15,6 +15,7 @@ type setTask struct {
 
 type abortTask struct{}
 type panicTask struct{}
+type nilTask struct{}
 
 func newSetTask(i int) Task {
 	return Value(
@@ -23,6 +24,20 @@ func newSetTask(i int) Task {
 			value: i,
 		}},
 	)
+}
+
+func newDiscardSetTask(i int) Task {
+	return Value(
+		"_",
+		&setTask{&setTaskParams{
+			value: i,
+		}},
+	)
+}
+
+func (s *nilTask) Do(c *Context) {}
+func (s *nilTask) Value() interface{} {
+	return nil
 }
 
 func (s *setTask) Do(c *Context) {}
@@ -157,5 +172,37 @@ func TestContextDoCatcher(t *testing.T) {
 
 	if err := c.Do(); err == nil {
 		t.Fatal("Err was nil want error.")
+	}
+}
+
+func TestContextDiscardNames(t *testing.T) {
+	tasks := []Task{
+		newDiscardSetTask(1),
+		newDiscardSetTask(2),
+		newDiscardSetTask(3),
+		newDiscardSetTask(4),
+	}
+
+	c := New(tasks)
+	c.Do()
+
+	if l := len(c.store); l != 0 {
+		t.Fatalf("Store len was %d want %d.", l, 0)
+	}
+}
+
+func TestContextDiscardValues(t *testing.T) {
+	tasks := []Task{
+		Value("1", &nilTask{}),
+		Value("2", &nilTask{}),
+		Value("3", &nilTask{}),
+		Value("4", &nilTask{}),
+	}
+
+	c := New(tasks)
+	c.Do()
+
+	if l := len(c.store); l != 0 {
+		t.Fatalf("Store len was %d want %d.", l, 0)
 	}
 }

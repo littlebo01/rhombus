@@ -28,7 +28,6 @@ func (t *valueTask) Do(c *Context) {
 	if t.job != nil {
 		t.job.Do(c)
 		val = t.job.Value()
-		c.Set(t.key, t.job.Value())
 	} else {
 		val = t.with(c)
 
