@@ -2,6 +2,8 @@ package rhombus
 
 import (
 	"errors"
+	"fmt"
+	"runtime"
 	"sync"
 )
 
@@ -13,17 +15,24 @@ type Context struct {
 	tasks []Task
 }
 
+const (
+	stackSize = 4 << 10
+)
+
 func New(tasks []Task) *Context {
 	return &Context{
 		store: make(map[string]interface{}),
 		tasks: tasks,
 	}
-
 }
 
 func (c *Context) catcher() {
 	if err := recover(); err != nil {
-		c.Abort(err)
+		stack := make([]byte, stackSize)
+		size := runtime.Stack(stack, true)
+		err2 := fmt.Errorf("[Task Recover] %s %s\n", err, stack[:size])
+
+		c.Abort(err2)
 	}
 }
 
