@@ -51,6 +51,10 @@ func (c *Context) Do() error {
 func (c *Context) Sub(task Task) error {
 	task.Do(c)
 
+	if v, ok := task.(TaskError); ok {
+		return v.Error()
+	}
+
 	return c.err
 }
 
