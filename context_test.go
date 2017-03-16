@@ -166,3 +166,14 @@ func TestContextErrTaskWithoutAbort(t *testing.T) {
 
 	contextAssert(t, c, 4)
 }
+
+func TestContextDel(t *testing.T) {
+	tasks := []Task{}
+	c := New(tasks)
+	c.Set("1", 1)
+	c.Del("1")
+
+	if l := len(c.store); l != 0 {
+		t.Fatalf("len(store) was %d want 0.", l)
+	}
+}

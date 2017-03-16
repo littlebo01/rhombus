@@ -78,7 +78,16 @@ func (c *Context) Get(key string) interface{} {
 
 func (c *Context) Set(key string, value interface{}) {
 	c.storeGuard.Lock()
-	defer c.storeGuard.Unlock()
 
 	c.store[key] = value
+
+	c.storeGuard.Unlock()
+}
+
+func (c *Context) Del(key string) {
+	if _, ok := c.store[key]; ok {
+		c.storeGuard.Lock()
+		delete(c.store, key)
+		c.storeGuard.Unlock()
+	}
 }
