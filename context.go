@@ -85,9 +85,9 @@ func (c *Context) Set(key string, value interface{}) {
 }
 
 func (c *Context) Del(key string) {
+	c.storeGuard.Lock()
 	if _, ok := c.store[key]; ok {
-		c.storeGuard.Lock()
 		delete(c.store, key)
-		c.storeGuard.Unlock()
 	}
+	c.storeGuard.Unlock()
 }
